@@ -130,19 +130,12 @@
     </div>
 
     <script>
-        // Emoji Cipher Mapping
         const emojiCipher = {
             'A': '🌹', 'B': '💖', 'C': '🌸', 'D': '🎀', 'E': '💌',
-            'F': '🌺', 'G': '🦋', 'H': '🍫', 'I': '🌠', 'J': '🕯️',
-            'K': '💞', 'L': '🎶', 'M': '🌙', 'N': '🍒', 'O': '💑',
-            'P': '🌻', 'Q': '🍭', 'R': '💫', 'S': '🍩', 'T': '🌂',
-            'U': '🎁', 'V': '💤', 'W': '🛍️', 'X': '🌧️', 'Y': '🦩',
-            'Z': '🌌', ' ': '✨', '0': '0️⃣', '1': '1️⃣', '2': '2️⃣',
-            '3': '3️⃣', '4': '4️⃣', '5': '5️⃣', '6': '6️⃣', '7': '7️⃣',
-            '8': '8️⃣', '9': '9️⃣'
+            // ... (keep previous emoji mapping)
         };
 
-        // Encoding Function
+        // ENCODE function
         function encode() {
             const input = document.getElementById('inputText').value.toUpperCase();
             let output = '';
@@ -152,10 +145,10 @@
             }
             
             document.getElementById('result').innerHTML = output;
-            updateURL(output);
+            updateHash(output);
         }
 
-        // Decoding Function
+        // DECODE function
         function decode() {
             const input = document.getElementById('inputText').value;
             const reverseMap = Object.fromEntries(
@@ -170,42 +163,37 @@
             document.getElementById('result').innerHTML = output.toLowerCase();
         }
 
-        // URL Management
-        function updateURL(encodedMessage) {
-            const baseUrl = window.location.href.split('?')[0];
-            const shareUrl = `${baseUrl}?message=${encodeURIComponent(encodedMessage)}`;
-            window.history.replaceState({}, '', shareUrl);
+        // HASH-based URL management
+        function updateHash(encodedMessage) {
+            const cleanMessage = encodedMessage.replace(/ /g, '✨');  // Preserve spaces
+            window.location.hash = `#m=${encodeURIComponent(cleanMessage)}`;
         }
 
-        // Share Functionality
+        // Share handler
         function shareMessage() {
-            const message = document.getElementById('result').innerHTML;
-            const shareUrl = window.location.href;
+            const baseUrl = window.location.href.split('#')[0];
+            const shareUrl = `${baseUrl}${window.location.hash}`;
             
             if(navigator.share) {
                 navigator.share({
-                    title: 'Decode My Secret Message! ❤️',
-                    text: `Can you decode this romantic emoji message? ${message}`,
+                    title: '🔐 Secret Emoji Message',
+                    text: 'Can you decode this?',
                     url: shareUrl
                 });
             } else {
-                alert('Share this URL: ' + shareUrl);
+                navigator.clipboard.writeText(shareUrl);
+                alert('Copied secret link!\n' + shareUrl);
             }
         }
 
-        // Copy Link Function
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href);
-            alert('Link copied to clipboard! 📋');
-        }
-
-        // Check for URL parameters on load
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const message = urlParams.get('message');
-            
-            if(message) {
-                document.getElementById('inputText').value = message;
+        // Load message from URL
+        window.addEventListener('load', () => {
+            if(window.location.hash.startsWith('#m=')) {
+                const encodedMessage = decodeURIComponent(
+                    window.location.hash.split('=')[1]
+                ).replace(/✨/g, ' ');
+                
+                document.getElementById('inputText').value = encodedMessage;
                 decode();
             }
         });
