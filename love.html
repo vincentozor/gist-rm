@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Romantic Emoji Decoder ❤️🔐</title>
+    <meta property="og:image" content="https://yourdomain.com/thumbnail.png">
+    <meta property="og:title" content="Decode Secret Love Notes 🔍❤️">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff99cc, #ff4d4d);
+            font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            color: #5a1a1a;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin: 30px 0;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            height: 150px;
+            padding: 15px;
+            margin: 20px 0;
+            border: 3px solid #ff3366;
+            border-radius: 15px;
+            font-size: 1.2em;
+            background: rgba(255,255,255,0.9);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        button {
+            background: #ff3366;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #result {
+            font-size: 2em;
+            margin: 30px 0;
+            word-wrap: break-word;
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 100px;
+        }
+
+        .share-buttons {
+            margin-top: 30px;
+        }
+
+        .how-it-works {
+            margin: 40px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 15px;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            textarea {
+                height: 100px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Romantic Emoji Decoder</h1>
+        
+        <textarea id="inputText" placeholder="Type your secret message here... 💌"></textarea>
+        
+        <div class="buttons">
+            <button onclick="encode()">Encode to Emojis 🔡→🎨</button>
+            <button onclick="decode()">Decode to Text 🎨→🔡</button>
+        </div>
+
+        <div id="result"></div>
+
+        <div class="share-buttons">
+            <button onclick="shareMessage()" style="background: #25D366;">Share via WhatsApp 💬</button>
+            <button onclick="copyLink()" style="background: #7289DA;">Copy Link 📋</button>
+        </div>
+
+        <div class="how-it-works">
+            <h2>How It Works ✨</h2>
+            <p>1. Write your secret message<br>
+               2. Encode to emojis 🔐<br>
+               3. Share the link with your crush! 💘</p>
+        </div>
+    </div>
+
+    <script>
+        // Emoji Cipher Mapping
+        const emojiCipher = {
+            'A': '🌹', 'B': '💖', 'C': '🌸', 'D': '🎀', 'E': '💌',
+            'F': '🌺', 'G': '🦋', 'H': '🍫', 'I': '🌠', 'J': '🕯️',
+            'K': '💞', 'L': '🎶', 'M': '🌙', 'N': '🍒', 'O': '💑',
+            'P': '🌻', 'Q': '🍭', 'R': '💫', 'S': '🍩', 'T': '🌂',
+            'U': '🎁', 'V': '💤', 'W': '🛍️', 'X': '🌧️', 'Y': '🦩',
+            'Z': '🌌', ' ': '✨', '0': '0️⃣', '1': '1️⃣', '2': '2️⃣',
+            '3': '3️⃣', '4': '4️⃣', '5': '5️⃣', '6': '6️⃣', '7': '7️⃣',
+            '8': '8️⃣', '9': '9️⃣'
+        };
+
+        // Encoding Function
+        function encode() {
+            const input = document.getElementById('inputText').value.toUpperCase();
+            let output = '';
+            
+            for(let char of input) {
+                output += emojiCipher[char] || char;
+            }
+            
+            document.getElementById('result').innerHTML = output;
+            updateURL(output);
+        }
+
+        // Decoding Function
+        function decode() {
+            const input = document.getElementById('inputText').value;
+            const reverseMap = Object.fromEntries(
+                Object.entries(emojiCipher).map(([k, v]) => [v, k])
+            );
+            
+            let output = '';
+            for(let char of input) {
+                output += reverseMap[char] || char;
+            }
+            
+            document.getElementById('result').innerHTML = output.toLowerCase();
+        }
+
+        // URL Management
+        function updateURL(encodedMessage) {
+            const baseUrl = window.location.href.split('?')[0];
+            const shareUrl = `${baseUrl}?message=${encodeURIComponent(encodedMessage)}`;
+            window.history.replaceState({}, '', shareUrl);
+        }
+
+        // Share Functionality
+        function shareMessage() {
+            const message = document.getElementById('result').innerHTML;
+            const shareUrl = window.location.href;
+            
+            if(navigator.share) {
+                navigator.share({
+                    title: 'Decode My Secret Message! ❤️',
+                    text: `Can you decode this romantic emoji message? ${message}`,
+                    url: shareUrl
+                });
+            } else {
+                alert('Share this URL: ' + shareUrl);
+            }
+        }
+
+        // Copy Link Function
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href);
+            alert('Link copied to clipboard! 📋');
+        }
+
+        // Check for URL parameters on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const message = urlParams.get('message');
+            
+            if(message) {
+                document.getElementById('inputText').value = message;
+                decode();
+            }
+        });
+    </script>
+</body>
+</html>
